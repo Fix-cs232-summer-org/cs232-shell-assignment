@@ -37,7 +37,7 @@ jobs:
       with:
         test-name: test entering newlines
         setup-command: ''
-        command: python test_newlines.py
+        command: python tests/test_newlines.py
         timeout: 1
         max-score: 1
     - name: passing args to commands
