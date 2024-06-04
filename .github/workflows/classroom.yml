@@ -1,0 +1,130 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: basic cd command
+      id: basic-cd-command
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: basic cd command
+        setup-command: ''
+        command: python tests/test_cd.py
+        timeout: 1
+        max-score: 1
+    - name: bad cd
+      id: bad-cd
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: bad cd
+        setup-command: ''
+        command: python tests/test_bad_cd.py
+        timeout: 1
+        max-score: 1
+    - name: test entering newlines
+      id: test-entering-newlines
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: test entering newlines
+        setup-command: ''
+        command: python test_newlines.py
+        timeout: 1
+        max-score: 1
+    - name: passing args to commands
+      id: passing-args-to-commands
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: passing args to commands
+        setup-command: ''
+        command: python tests/test_pass_args.py
+        timeout: 1
+        max-score: 1
+    - name: running pwd
+      id: running-pwd
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: running pwd
+        setup-command: ''
+        command: python tests/test_pwd.py
+        timeout: 1
+        max-score: 1
+    - name: false command shows error code
+      id: false-command-shows-error-code
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: false command shows error code
+        setup-command: ''
+        command: python tests/test_false_rc.py
+        timeout: 1
+        max-score: 1
+    - name: cmd not found in path
+      id: cmd-not-found-in-path
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: cmd not found in path
+        setup-command: ''
+        command: python tests/test_cmd_not_in_path.py
+        timeout: 1
+        max-score: 1
+    - name: full pathname of command
+      id: full-pathname-of-command
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: full pathname of command
+        setup-command: ''
+        command: python tests/test_full_pathname.py
+        timeout: 1
+        max-score: 1
+    - name: background command
+      id: background-command
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: background command
+        setup-command: ''
+        command: python tests/test_bg_cmd.py
+        timeout: 1
+        max-score: 2
+    - name: bg cmd shows prompt before output
+      id: bg-cmd-shows-prompt-before-output
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: bg cmd shows prompt before output
+        setup-command: ''
+        command: python tests/test_bg_prompt_first.py
+        timeout: 1
+        max-score: 1
+    - name: bad ampersands in command line
+      id: bad-ampersands-in-command-line
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: bad ampersands in command line
+        setup-command: ''
+        command: python tests/test_bad_amps.py
+        timeout: 1
+        max-score: 2
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        BASIC-CD-COMMAND_RESULTS: "${{steps.basic-cd-command.outputs.result}}"
+        BAD-CD_RESULTS: "${{steps.bad-cd.outputs.result}}"
+        TEST-ENTERING-NEWLINES_RESULTS: "${{steps.test-entering-newlines.outputs.result}}"
+        PASSING-ARGS-TO-COMMANDS_RESULTS: "${{steps.passing-args-to-commands.outputs.result}}"
+        RUNNING-PWD_RESULTS: "${{steps.running-pwd.outputs.result}}"
+        FALSE-COMMAND-SHOWS-ERROR-CODE_RESULTS: "${{steps.false-command-shows-error-code.outputs.result}}"
+        CMD-NOT-FOUND-IN-PATH_RESULTS: "${{steps.cmd-not-found-in-path.outputs.result}}"
+        FULL-PATHNAME-OF-COMMAND_RESULTS: "${{steps.full-pathname-of-command.outputs.result}}"
+        BACKGROUND-COMMAND_RESULTS: "${{steps.background-command.outputs.result}}"
+        BG-CMD-SHOWS-PROMPT-BEFORE-OUTPUT_RESULTS: "${{steps.bg-cmd-shows-prompt-before-output.outputs.result}}"
+        BAD-AMPERSANDS-IN-COMMAND-LINE_RESULTS: "${{steps.bad-ampersands-in-command-line.outputs.result}}"
+      with:
+        runners: basic-cd-command,bad-cd,test-entering-newlines,passing-args-to-commands,running-pwd,false-command-shows-error-code,cmd-not-found-in-path,full-pathname-of-command,background-command,bg-cmd-shows-prompt-before-output,bad-ampersands-in-command-line
